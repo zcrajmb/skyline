@@ -65,7 +65,7 @@ Every sound is synthesised live with the Web Audio API; there are no audio files
 | Empire State | New York | Yankee Doodle (18th century) | fife and drum |
 | Leaning Tower of Pisa | Pisa | La donna è mobile (Verdi, 1851) | mandolin |
 | Eiffel Tower | Paris | La Marseillaise (1792) | accordion |
-| Burj Khalifa | Dubai | an oud flourish in the Hijaz mode (not a specific song) | oud |
+| Burj Khalifa | Dubai | Tala' al-Badru 'Alayna (traditional nasheed) | oud |
 | Tower Block | Anytown | a lift arrival "ding" | bell |
 
 The current piece's song is shown under its name. There are also effects for rotate, hold, hard drop, line clears (the arpeggio climbs higher with more lines), level-up and game over. Audio starts on your first click or key press, as browsers require. Your sound on/off choice is remembered.

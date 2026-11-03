@@ -15,17 +15,6 @@ export const liftDing: SoundFn = s => {
   s.bell(note('C6'), 0.12, 0.8, 0.12);
 };
 
-/** Dubai: a short oud flourish in the Hijaz mode (an improvisation, not a specific song). */
-export const oudHijaz: SoundFn = s => {
-  s.solo('song', () => {
-    ['D4', 'Eb4', 'F#4', 'G4', 'A4', 'G4', 'F#4', 'Eb4', 'D4'].forEach((n, i) => {
-      s.pluck(note(n), i * 0.11, 0.9, 0.16, 0.4);
-    });
-    s.pluck(note('D3'), 0, 1.2, 0.1, 0.2);
-    s.pluck(note('D3'), 0.88, 1.2, 0.1, 0.2);
-  });
-};
-
 // ---- Game effects ----
 
 export const rotateClick: SoundFn = s => {

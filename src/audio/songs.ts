@@ -92,6 +92,11 @@ const mandolin: Voice = (s, f, at, dur) => {
   for (let t = 0; t < Math.max(0.07, dur * 0.9); t += 0.065) s.pluck(f * 2, at + t, 0.3, 0.16, 0.8);
 };
 
+/** Oud: plucked strings, ringing a little past each note. */
+const oud: Voice = (s, f, at, dur) => {
+  s.pluck(f, at, Math.max(0.6, dur + 0.35), 0.23, 0.45);
+};
+
 /** Musette accordion: three slightly detuned reeds. */
 const accordion: Voice = (s, f, at, dur) => {
   for (const detune of [-14, 0, 14]) {
@@ -164,6 +169,28 @@ export const LA_DONNA_E_MOBILE: Song = {
   phrases: [
     'G4/1 G4/1 G4/1 Bb4/1.5 A4/.5 F4/2',
     'F4/1 F4/1 F4/1 A4/1.5 G4/.5 E4/2',
+  ],
+};
+
+// Pitches read from Pimba Piano's free score (pimbapiano.com), which gives notes
+// without rhythm; the rhythm here is our own simple setting.
+const TALA_A = 'F4/1 G4/1 A4/1 Bb4/1.5 A4/.5 G4/1 Bb4/1 A4/1 A4/1 G4/1 F4/2';
+const TALA_B = 'F4/1 G4/1 A4/1 Bb4/1.5 A4/.5 G4/1 Bb4/1 A4/3';
+
+export const TALA_AL_BADRU: Song = {
+  title: "Tala' al-Badru 'Alayna",
+  origin: 'Traditional nasheed from the Arabian Peninsula, sung for centuries',
+  bpm: 240,
+  voice: oud,
+  phrases: [
+    TALA_A,                                     // Tala' al-badru 'alayna
+    TALA_B,                                     // min thaniyyat il-wada'
+    TALA_A,                                     // wajab ash-shukru 'alayna
+    'F4/1 G4/1 A4/2 F4/1 G4/1 D4/1 G4/1 F4/3',  // ma da'a lillahi da'
+    TALA_A,                                     // ayyuha l-mab'uthu fina
+    TALA_B,                                     // ji'ta bil-amri l-muta'
+    TALA_A,                                     // ji'ta sharrafta l-madina
+    'F4/1 G4/1 F4/1 F4/1 G4/2 D4/1 G4/1 F4/3',  // marhaban ya khayra da'
   ],
 };
 

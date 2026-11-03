@@ -22,10 +22,10 @@ function recorder() {
 }
 
 describe('songs', () => {
-  it('finds all six songs', () => {
+  it('finds all seven songs', () => {
     expect(SONGS.map(s => s.title).sort()).toEqual([
       'God Save the King', 'Greensleeves', 'La Marseillaise', 'La donna è mobile',
-      'London Bridge Is Falling Down', 'Yankee Doodle',
+      'London Bridge Is Falling Down', "Tala' al-Badru 'Alayna", 'Yankee Doodle',
     ]);
   });
 
@@ -76,7 +76,7 @@ describe('songs', () => {
     expect(tunes).toEqual({
       tower: null,
       shard: 'God Save the King',
-      burj: null,
+      burj: "Tala' al-Badru 'Alayna",
       walkie: 'London Bridge Is Falling Down',
       empire: 'Yankee Doodle',
       gherkin: 'Greensleeves',

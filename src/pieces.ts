@@ -11,9 +11,10 @@
 import {
   bands, hgrad, line, noise, poly, rect, windows, WINDOW_LIT, type Ctx,
 } from './render/artkit';
-import { liftDing, oudHijaz, type SoundFn } from './audio/sounds';
+import { liftDing, type SoundFn } from './audio/sounds';
 import {
-  GOD_SAVE_THE_KING, GREENSLEEVES, LA_DONNA_E_MOBILE, LA_MARSEILLAISE, LONDON_BRIDGE, songSound, YANKEE_DOODLE,
+  GOD_SAVE_THE_KING, GREENSLEEVES, LA_DONNA_E_MOBILE, LA_MARSEILLAISE, LONDON_BRIDGE, songSound, TALA_AL_BADRU,
+  YANKEE_DOODLE,
 } from './audio/songs';
 
 export interface PieceDef {
@@ -114,7 +115,7 @@ export const PIECES: PieceDef[] = [
     id: 'burj',
     name: 'Burj Khalifa',
     city: 'Dubai',
-    sound: oudHijaz,
+    sound: songSound(TALA_AL_BADRU),
     footprint: ['.X.', '.X.', 'XXX'],
     lot: '#2a303d',
     tone: STEEL_HI,
