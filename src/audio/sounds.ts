@@ -1,12 +1,13 @@
 /**
- * Sound recipes. City signatures play when a building lands; the rest are
- * general game effects. Each recipe takes the synth and schedules its notes.
+ * One-off sound recipes: landing sounds for pieces without a song, and general
+ * game effects. Each recipe takes the synth and schedules its notes.
+ * Songs (one phrase per landing) live in songs.ts.
  */
 import { note, type Synth } from './synth';
 
 export type SoundFn = (s: Synth) => void;
 
-// ---- City signatures ----
+// ---- Landing sounds for pieces without a song ----
 
 /** Generic city: a lift arriving at the floor. */
 export const liftDing: SoundFn = s => {
@@ -14,52 +15,14 @@ export const liftDing: SoundFn = s => {
   s.bell(note('C6'), 0.12, 0.8, 0.12);
 };
 
-/** London: the opening of the Westminster quarters (public-domain chime) on a big bell. */
-export const westminsterChime: SoundFn = s => {
-  ['G#4', 'F#4', 'E4', 'B3'].forEach((n, i) => s.bell(note(n), i * 0.17, 0.9, 0.16));
-};
-
-/** London: a double-decker bus bell, ding-ding. */
-export const busBell: SoundFn = s => {
-  s.bell(note('G6'), 0, 0.35, 0.13);
-  s.bell(note('G6'), 0.13, 0.5, 0.13);
-};
-
-/** London: a two-tone Underground door chime. */
-export const tubeChime: SoundFn = s => {
-  s.tone({ freq: note('A5'), dur: 0.35, gain: 0.24, type: 'triangle' });
-  s.tone({ freq: note('F#5'), at: 0.16, dur: 0.5, gain: 0.24, type: 'triangle' });
-};
-
-/** Dubai: a quick oud run in the Hijaz mode. */
+/** Dubai: a short oud flourish in the Hijaz mode (an improvisation, not a specific song). */
 export const oudHijaz: SoundFn = s => {
-  ['D4', 'Eb4', 'F#4', 'G4'].forEach((n, i) => s.pluck(note(n), i * 0.075, 0.9, 0.2, 0.4));
-  s.pluck(note('D3'), 0, 1.2, 0.1, 0.2);
-};
-
-/** New York: a yellow-cab horn, honk-honk. */
-export const taxiHorn: SoundFn = s => {
-  for (const at of [0, 0.17]) {
-    for (const f of [note('F#4'), note('A#4')]) {
-      s.tone({ freq: f, at, dur: 0.13, gain: 0.13, type: 'square', lowpass: 1500, attack: 0.008 });
-    }
-  }
-};
-
-/** Pisa: the campanile's deep bell, sagging slightly as it leans. */
-export const leaningBell: SoundFn = s => {
-  s.bell(note('G3'), 0, 1.6, 0.26, note('G3') * 0.97);
-};
-
-/** Paris: a few bars of musette accordion — three slightly detuned reeds. */
-export const musette: SoundFn = s => {
-  ['G4', 'B4', 'D5', 'B4'].forEach((n, i) => {
-    for (const detune of [-14, 0, 14]) {
-      s.tone({
-        freq: note(n), at: i * 0.11, dur: i === 3 ? 0.32 : 0.14, gain: 0.09,
-        type: 'sawtooth', detune, lowpass: 2200, attack: 0.015,
-      });
-    }
+  s.solo('song', () => {
+    ['D4', 'Eb4', 'F#4', 'G4', 'A4', 'G4', 'F#4', 'Eb4', 'D4'].forEach((n, i) => {
+      s.pluck(note(n), i * 0.11, 0.9, 0.16, 0.4);
+    });
+    s.pluck(note('D3'), 0, 1.2, 0.1, 0.2);
+    s.pluck(note('D3'), 0.88, 1.2, 0.1, 0.2);
   });
 };
 

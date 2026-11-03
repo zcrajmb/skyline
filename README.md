@@ -55,22 +55,22 @@ If storage is unavailable (private mode, blocked), the game still works. Daily a
 
 ## Sound
 
-Every sound is synthesised live with the Web Audio API; there are no audio files. When a building lands, it plays a signature sound from its city:
+Every sound is synthesised live with the Web Audio API; there are no audio files. When a building lands, it plays the **next phrase of a song from its country**, so each song unfolds a bar or two at a time over a game. A new landing cuts off the phrase before it. All the songs are public domain.
 
-| Piece | City | Sound |
-| --- | --- | --- |
-| Tower Block | Anytown | lift arrival "ding" |
-| The Shard | London | opening of the Westminster quarters chime on a big bell |
-| Walkie Talkie | London | double-decker bus bell, ding-ding |
-| The Gherkin | London | two-tone Underground door chime |
-| Burj Khalifa | Dubai | quick oud run in the Hijaz mode |
-| Empire State | New York | yellow-cab horn, honk-honk |
-| Leaning Tower of Pisa | Pisa | deep campanile bell that sags slightly in pitch |
-| Eiffel Tower | Paris | musette accordion arpeggio |
+| Piece | City | Song | Played on |
+| --- | --- | --- | --- |
+| The Shard | London | God Save the King (traditional, 1744) | bells |
+| Walkie Talkie | London | London Bridge Is Falling Down (traditional) | music box |
+| The Gherkin | London | Greensleeves (16th century) | recorder |
+| Empire State | New York | Yankee Doodle (18th century) | fife and drum |
+| Leaning Tower of Pisa | Pisa | La donna è mobile (Verdi, 1851) | mandolin |
+| Eiffel Tower | Paris | La Marseillaise (1792) | accordion |
+| Burj Khalifa | Dubai | an oud flourish in the Hijaz mode (not a specific song) | oud |
+| Tower Block | Anytown | a lift arrival "ding" | bell |
 
-There are also effects for rotate, hold, hard drop, line clears (the arpeggio climbs higher with more lines), level-up and game over. Audio starts on your first click or key press, as browsers require. Your sound on/off choice is remembered.
+The current piece's song is shown under its name. There are also effects for rotate, hold, hard drop, line clears (the arpeggio climbs higher with more lines), level-up and game over. Audio starts on your first click or key press, as browsers require. Your sound on/off choice is remembered.
 
-To change a building's sound, set its `sound` in [`src/pieces.ts`](src/pieces.ts). The recipes live in [`src/audio/sounds.ts`](src/audio/sounds.ts), built from the helpers in [`src/audio/synth.ts`](src/audio/synth.ts): `tone`, `bell`, `pluck` and `noise`.
+**Adding or changing a song:** songs are defined in [`src/audio/songs.ts`](src/audio/songs.ts) as phrases of `note/beats` tokens, e.g. `'G4/1 G4/1 A4/1 F#4/1.5 G4/.5 A4/1'` (`r` is a rest), with a tempo and an instrument. Point a piece at one with `sound: songSound(MY_SONG)` in [`src/pieces.ts`](src/pieces.ts). Keep each phrase under about 3.5 seconds; the tests check this. Only use melodies that are out of copyright. One-off sounds live in [`src/audio/sounds.ts`](src/audio/sounds.ts), built from the helpers in [`src/audio/synth.ts`](src/audio/synth.ts): `tone`, `bell`, `pluck` and `noise`.
 
 ## Test
 
@@ -143,7 +143,8 @@ src/
     game.ts          game state: movement, kicks, gravity, lock delay, hold, scoring
   audio/
     synth.ts         Web Audio synth: tones, bells, plucked strings, noise
-    sounds.ts        city signatures and game effects
+    songs.ts         public-domain songs, instruments, phrase-per-landing player
+    sounds.ts        one-off landing sounds and game effects
     player.ts        audio unlock, mute, maps game events to sounds
   render/
     artkit.ts        drawing helpers for piece art

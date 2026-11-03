@@ -1,5 +1,6 @@
 import './style.css';
 import { SoundPlayer } from './audio/player';
+import type { SongSound } from './audio/songs';
 import { compileRotations, Game, type RotationMode } from './core/game';
 import { PIECES } from './pieces';
 import { drawBackground } from './render/background';
@@ -250,6 +251,8 @@ function updateHud(g: Game): void {
     hud.active = act;
     $('now-name').textContent = act >= 0 ? PIECES[act].name : '—';
     $('now-city').textContent = act >= 0 ? PIECES[act].city : '';
+    const tune = act >= 0 ? (PIECES[act].sound as Partial<SongSound>).title : undefined;
+    $('now-tune').textContent = tune ? `♪ ${tune}` : '';
   }
 }
 

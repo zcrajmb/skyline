@@ -11,9 +11,10 @@
 import {
   bands, hgrad, line, noise, poly, rect, windows, WINDOW_LIT, type Ctx,
 } from './render/artkit';
+import { liftDing, oudHijaz, type SoundFn } from './audio/sounds';
 import {
-  busBell, leaningBell, liftDing, musette, oudHijaz, taxiHorn, tubeChime, westminsterChime, type SoundFn,
-} from './audio/sounds';
+  GOD_SAVE_THE_KING, GREENSLEEVES, LA_DONNA_E_MOBILE, LA_MARSEILLAISE, LONDON_BRIDGE, songSound, YANKEE_DOODLE,
+} from './audio/songs';
 
 export interface PieceDef {
   /** Stable key, used in saved data and tests. */
@@ -30,7 +31,10 @@ export interface PieceDef {
   tone: string;
   /** Where the building is; shown beside its name. */
   city: string;
-  /** Plays when the building lands (recipes live in src/audio/sounds.ts). */
+  /**
+   * Plays when the building lands: a one-off sound from src/audio/sounds.ts, or
+   * songSound(...) from src/audio/songs.ts to play the next phrase of a tune.
+   */
   sound: SoundFn;
   draw: (ctx: Ctx) => void;
 }
@@ -80,7 +84,7 @@ export const PIECES: PieceDef[] = [
     id: 'shard',
     name: 'The Shard',
     city: 'London',
-    sound: westminsterChime,
+    sound: songSound(GOD_SAVE_THE_KING),
     footprint: ['.X.', 'XXX'],
     lot: '#28303f',
     tone: GLASS,
@@ -137,7 +141,7 @@ export const PIECES: PieceDef[] = [
     id: 'walkie',
     name: 'Walkie Talkie',
     city: 'London',
-    sound: busBell,
+    sound: songSound(LONDON_BRIDGE),
     footprint: ['XXX', '.X.'],
     lot: '#273239',
     tone: SAGE,
@@ -169,7 +173,7 @@ export const PIECES: PieceDef[] = [
     id: 'empire',
     name: 'Empire State',
     city: 'New York',
-    sound: taxiHorn,
+    sound: songSound(YANKEE_DOODLE),
     footprint: ['X.', 'XX', 'XX'],
     lot: '#2f2c2a',
     tone: STONE,
@@ -192,7 +196,7 @@ export const PIECES: PieceDef[] = [
     id: 'gherkin',
     name: 'The Gherkin',
     city: 'London',
-    sound: tubeChime,
+    sound: songSound(GREENSLEEVES),
     footprint: ['.X.', 'XXX', '.X.'],
     lot: '#25302f',
     tone: TEAL,
@@ -223,7 +227,7 @@ export const PIECES: PieceDef[] = [
     id: 'pisa',
     name: 'Leaning Tower of Pisa',
     city: 'Pisa',
-    sound: leaningBell,
+    sound: songSound(LA_DONNA_E_MOBILE),
     footprint: ['X.', 'XX', '.X'],
     lot: '#302d2a',
     tone: MARBLE,
@@ -262,7 +266,7 @@ export const PIECES: PieceDef[] = [
     id: 'eiffel',
     name: 'Eiffel Tower',
     city: 'Paris',
-    sound: musette,
+    sound: songSound(LA_MARSEILLAISE),
     footprint: ['.X.', 'XXX', 'X.X'],
     minLevel: 5,
     lot: '#2c2a2e',

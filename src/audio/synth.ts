@@ -21,6 +21,9 @@ export interface ToneOpts {
 export class Synth {
   readonly ctx: AudioContext;
   private master: GainNode;
+  /** Where new notes are routed; swapped temporarily by solo(). */
+  private dest: AudioNode;
+  private channels = new Map<string, GainNode>();
   private plucks = new Map<string, AudioBuffer>();
 
   constructor(volume = 0.5) {
@@ -31,6 +34,29 @@ export class Synth {
     this.master = this.ctx.createGain();
     this.master.gain.value = volume;
     this.master.connect(comp).connect(this.ctx.destination);
+    this.dest = this.master;
+  }
+
+  /**
+   * Schedules fn's notes on a fresh named channel, fading out whatever that
+   * channel was still playing — so a new song phrase cuts off the last one.
+   */
+  solo(name: string, fn: () => void): void {
+    const old = this.channels.get(name);
+    if (old) {
+      old.gain.setTargetAtTime(0, this.ctx.currentTime, 0.03);
+      setTimeout(() => old.disconnect(), 500);
+    }
+    const ch = this.ctx.createGain();
+    ch.connect(this.master);
+    this.channels.set(name, ch);
+    const prev = this.dest;
+    this.dest = ch;
+    try {
+      fn();
+    } finally {
+      this.dest = prev;
+    }
   }
 
   /** Browsers start audio suspended until a user gesture. */
@@ -52,7 +78,7 @@ export class Synth {
     g.gain.setValueAtTime(0.0001, start);
     g.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak), start + attack);
     g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-    g.connect(this.master);
+    g.connect(this.dest);
     return g;
   }
 
@@ -121,7 +147,7 @@ export class Synth {
     src.buffer = buf;
     const g = this.ctx.createGain();
     g.gain.value = gain;
-    src.connect(g).connect(this.master);
+    src.connect(g).connect(this.dest);
     src.start(start);
   }
 
