@@ -11,6 +11,9 @@
 import {
   bands, hgrad, line, noise, poly, rect, windows, WINDOW_LIT, type Ctx,
 } from './render/artkit';
+import {
+  busBell, leaningBell, liftDing, musette, oudHijaz, taxiHorn, tubeChime, westminsterChime, type SoundFn,
+} from './audio/sounds';
 
 export interface PieceDef {
   /** Stable key, used in saved data and tests. */
@@ -25,6 +28,10 @@ export interface PieceDef {
   lot: string;
   /** Main tone, used for small previews and the ghost tint. */
   tone: string;
+  /** Where the building is; shown beside its name. */
+  city: string;
+  /** Plays when the building lands (recipes live in src/audio/sounds.ts). */
+  sound: SoundFn;
   draw: (ctx: Ctx) => void;
 }
 
@@ -54,6 +61,8 @@ export const PIECES: PieceDef[] = [
   {
     id: 'tower',
     name: 'Tower Block',
+    city: 'Anytown',
+    sound: liftDing,
     footprint: ['X', 'X', 'X', 'X'],
     lot: '#2b3140',
     tone: STEEL,
@@ -70,6 +79,8 @@ export const PIECES: PieceDef[] = [
   {
     id: 'shard',
     name: 'The Shard',
+    city: 'London',
+    sound: westminsterChime,
     footprint: ['.X.', 'XXX'],
     lot: '#28303f',
     tone: GLASS,
@@ -98,6 +109,8 @@ export const PIECES: PieceDef[] = [
   {
     id: 'burj',
     name: 'Burj Khalifa',
+    city: 'Dubai',
+    sound: oudHijaz,
     footprint: ['.X.', '.X.', 'XXX'],
     lot: '#2a303d',
     tone: STEEL_HI,
@@ -123,6 +136,8 @@ export const PIECES: PieceDef[] = [
   {
     id: 'walkie',
     name: 'Walkie Talkie',
+    city: 'London',
+    sound: busBell,
     footprint: ['XXX', '.X.'],
     lot: '#273239',
     tone: SAGE,
@@ -153,6 +168,8 @@ export const PIECES: PieceDef[] = [
   {
     id: 'empire',
     name: 'Empire State',
+    city: 'New York',
+    sound: taxiHorn,
     footprint: ['X.', 'XX', 'XX'],
     lot: '#2f2c2a',
     tone: STONE,
@@ -174,6 +191,8 @@ export const PIECES: PieceDef[] = [
   {
     id: 'gherkin',
     name: 'The Gherkin',
+    city: 'London',
+    sound: tubeChime,
     footprint: ['.X.', 'XXX', '.X.'],
     lot: '#25302f',
     tone: TEAL,
@@ -203,6 +222,8 @@ export const PIECES: PieceDef[] = [
   {
     id: 'pisa',
     name: 'Leaning Tower of Pisa',
+    city: 'Pisa',
+    sound: leaningBell,
     footprint: ['X.', 'XX', '.X'],
     lot: '#302d2a',
     tone: MARBLE,
@@ -240,6 +261,8 @@ export const PIECES: PieceDef[] = [
   {
     id: 'eiffel',
     name: 'Eiffel Tower',
+    city: 'Paris',
+    sound: musette,
     footprint: ['.X.', 'XXX', 'X.X'],
     minLevel: 5,
     lot: '#2c2a2e',

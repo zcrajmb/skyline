@@ -58,6 +58,15 @@ export function scoreForLines(n: number, level: number): number {
   return LINE_SCORES[Math.min(n, 4)] * level;
 }
 
+/** Things that happened, for sound and effects. Drained by the UI each frame. */
+export type GameEvent =
+  | { type: 'lock'; piece: number; hard: boolean }
+  | { type: 'clear'; lines: number }
+  | { type: 'levelUp'; level: number }
+  | { type: 'rotate' }
+  | { type: 'hold' }
+  | { type: 'gameOver' };
+
 /** Pre-computes the four rotations of every piece's footprint. */
 export function compileRotations(pieces: readonly PieceSpec[]): Shape[][] {
   return pieces.map(p => allRotations(parseFootprint(p.footprint)));
@@ -87,6 +96,7 @@ export class Game {
   /** Most recent line clear, for the renderer's flash. */
   lastClear: { rows: number[]; at: number } | null = null;
 
+  private events: GameEvent[] = [];
   private bag: Bag;
   private gravityAcc = 0;
   private lockTimer = 0;
@@ -111,6 +121,13 @@ export class Game {
 
   get activeShape(): Shape | null {
     return this.active ? this.shapeOf(this.active) : null;
+  }
+
+  /** Returns and clears the events since the last call. */
+  drainEvents(): GameEvent[] {
+    const out = this.events;
+    this.events = [];
+    return out;
   }
 
   // ---- player actions; each returns true if it did something ----
@@ -139,6 +156,7 @@ export class Game {
         a.x = bx + kx;
         a.y = by + ky;
         this.onManipulated();
+        this.events.push({ type: 'rotate' });
         return true;
       }
     }
@@ -161,7 +179,7 @@ export class Game {
     const y = dropY(this.grid, this.shapeOf(a), a.x, a.y);
     this.score += (y - a.y) * 2;
     a.y = y;
-    this.lock();
+    this.lock(true);
   }
 
   holdPiece(): boolean {
@@ -171,6 +189,7 @@ export class Game {
     this.spawn(this.hold ?? this.takeFromQueue());
     this.hold = current;
     this.holdUsed = true;
+    this.events.push({ type: 'hold' });
     return true;
   }
 
@@ -241,7 +260,7 @@ export class Game {
     this.lockTimer = 0;
     this.lockResets = 0;
     if (collides(this.grid, shape, x, y)) {
-      this.over = true; // block out
+      this.endGame(); // block out
       return;
     }
     // Drop one row straight away so the piece is visible immediately.
@@ -250,23 +269,32 @@ export class Game {
     this.lowestY = y;
   }
 
-  private lock(): void {
+  private endGame(): void {
+    this.over = true;
+    this.events.push({ type: 'gameOver' });
+  }
+
+  private lock(hard = false): void {
     const a = this.active!;
     const shape = this.shapeOf(a);
     place(this.grid, shape, a.x, a.y, (lx, ly) => ({ piece: a.piece, rot: a.rot, lx, ly }));
     this.piecesPlaced++;
+    this.events.push({ type: 'lock', piece: a.piece, hard });
     // Lock out: the whole piece came to rest above the visible field.
     if (shape.cells.every(([, cy]) => a.y + cy < HIDDEN_ROWS)) {
-      this.over = true;
+      this.endGame();
       return;
     }
     const rows = clearLines(this.grid);
     if (rows.length) {
+      const before = this.level;
       this.score += scoreForLines(rows.length, this.level);
       this.linesByLevel[this.level - 1] = (this.linesByLevel[this.level - 1] ?? 0) + rows.length;
       this.lines += rows.length;
       this.level = Math.max(this.startLevel, Math.floor(this.lines / LINES_PER_LEVEL) + 1);
       this.lastClear = { rows, at: this.elapsed };
+      this.events.push({ type: 'clear', lines: rows.length });
+      if (this.level > before) this.events.push({ type: 'levelUp', level: this.level });
     }
     this.holdUsed = false;
     this.spawn(this.takeFromQueue());

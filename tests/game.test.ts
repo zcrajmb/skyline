@@ -138,6 +138,38 @@ describe('lock delay', () => {
   });
 });
 
+describe('events', () => {
+  it('reports the landed piece, line clears and level-ups', () => {
+    const g = newGame();
+    g.lines = 9;
+    for (let x = 1; x < COLS; x++) g.grid[BOTTOM][x] = junk;
+    g.active = { piece: TOWER, rot: 0, x: 0, y: 2 };
+    g.drainEvents();
+    g.hardDrop();
+    expect(g.drainEvents()).toEqual([
+      { type: 'lock', piece: TOWER, hard: true },
+      { type: 'clear', lines: 1 },
+      { type: 'levelUp', level: 2 },
+    ]);
+    expect(g.drainEvents()).toEqual([]);
+  });
+
+  it('reports rotate and hold only when they succeed', () => {
+    const g = newGame('upright');
+    g.rotate(1);
+    g.holdPiece();
+    g.holdPiece();
+    expect(g.drainEvents()).toEqual([{ type: 'hold' }]);
+  });
+
+  it('reports a soft lock as not hard', () => {
+    const g = newGame();
+    g.active = { piece: TOWER, rot: 0, x: 4, y: BOTTOM - 3 };
+    g.update(LOCK_DELAY_MS + 1);
+    expect(g.drainEvents()[0]).toEqual({ type: 'lock', piece: TOWER, hard: false });
+  });
+});
+
 describe('game over', () => {
   it('ends when a piece locks entirely above the visible field (lock out)', () => {
     const g = newGame();

@@ -31,6 +31,7 @@ This runs the tests, builds the game and force-pushes `dist/` to the `gh-pages` 
 | Hard drop | Space | fast flick down |
 | Hold | C or Shift | Hold button |
 | Pause | P or Esc | ❚❚ button |
+| Sound on/off | M | button on the menu and pause screens |
 
 On touch screens, on-screen buttons are shown as a fallback.
 
@@ -51,6 +52,25 @@ On touch screens, on-screen buttons are shown as a fallback.
 If storage is unavailable (private mode, blocked), the game still works. Daily attempts just aren't limited.
 
 **Rules**: 10×20 visible board plus 2 hidden spawn rows. There's a ghost piece, hold (once per piece) and a 3-piece next queue. Clearing 1 / 2 / 3 / 4+ lines scores 100 / 300 / 500 / 800 × level. Soft drop scores 1 per row and hard drop 2 per row. You level up every 10 lines, and gravity speeds up each level. Lock delay is 500 ms, reset by successful moves and rotations up to 15 times per piece, and refreshed whenever the piece reaches a new lowest row.
+
+## Sound
+
+Every sound is synthesised live with the Web Audio API; there are no audio files. When a building lands, it plays a signature sound from its city:
+
+| Piece | City | Sound |
+| --- | --- | --- |
+| Tower Block | Anytown | lift arrival "ding" |
+| The Shard | London | opening of the Westminster quarters chime on a big bell |
+| Walkie Talkie | London | double-decker bus bell, ding-ding |
+| The Gherkin | London | two-tone Underground door chime |
+| Burj Khalifa | Dubai | quick oud run in the Hijaz mode |
+| Empire State | New York | yellow-cab horn, honk-honk |
+| Leaning Tower of Pisa | Pisa | deep campanile bell that sags slightly in pitch |
+| Eiffel Tower | Paris | musette accordion arpeggio |
+
+There are also effects for rotate, hold, hard drop, line clears (the arpeggio climbs higher with more lines), level-up and game over. Audio starts on your first click or key press, as browsers require. Your sound on/off choice is remembered.
+
+To change a building's sound, set its `sound` in [`src/pieces.ts`](src/pieces.ts). The recipes live in [`src/audio/sounds.ts`](src/audio/sounds.ts), built from the helpers in [`src/audio/synth.ts`](src/audio/synth.ts): `tone`, `bell`, `pluck` and `noise`.
 
 ## Test
 
@@ -88,7 +108,8 @@ To tune it:
 ## Pieces
 
 Each entry in [`src/pieces.ts`](src/pieces.ts) has:
-- `id`, `name`
+- `id`, `name`, `city`
+- `sound`: what plays when it lands
 - `footprint`: rows of `X` / `.`, used for collision
 - `minLevel`: optional; the Eiffel Tower is `5`
 - `lot` and `tone`: colours
@@ -120,6 +141,10 @@ src/
     board.ts         grid, collision, drop, line clearing
     bag.ts           bag randomiser with level gating
     game.ts          game state: movement, kicks, gravity, lock delay, hold, scoring
+  audio/
+    synth.ts         Web Audio synth: tones, bells, plucked strings, noise
+    sounds.ts        city signatures and game effects
+    player.ts        audio unlock, mute, maps game events to sounds
   render/
     artkit.ts        drawing helpers for piece art
     sprites.ts       per-rotation sprite cache

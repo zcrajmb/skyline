@@ -1,4 +1,5 @@
 import './style.css';
+import { SoundPlayer } from './audio/player';
 import { compileRotations, Game, type RotationMode } from './core/game';
 import { PIECES } from './pieces';
 import { drawBackground } from './render/background';
@@ -26,6 +27,7 @@ const rotations = compileRotations(PIECES);
 const footprints = rotations.map(r => r[0]);
 const sprites = new SpriteCache(PIECES, rotations);
 const renderer = new BoardRenderer(boardCanvas, sprites);
+const sound = new SoundPlayer(PIECES);
 
 let state: State = 'menu';
 let game: Game | null = null;
@@ -185,12 +187,35 @@ input.bindKeyboard(window);
 input.bindTouch(boardCanvas, () => renderer.cellCssPx());
 input.bindButtons($('touch-controls'));
 
-// Enter starts / resumes from overlays.
+// Enter starts / resumes from overlays; M toggles sound.
 window.addEventListener('keydown', e => {
+  if (e.code === 'KeyM') toggleSound();
   if (e.code !== 'Enter') return;
   if (state === 'paused') resume();
   else if (state === 'over' && kind === 'free') start('free');
 });
+
+// ---- sound ----
+
+// Audio may only start after a user gesture, so unlock on the first one.
+for (const type of ['pointerdown', 'keydown'] as const) {
+  window.addEventListener(type, () => sound.unlock(), { capture: true });
+}
+
+function renderSoundButtons(): void {
+  document.querySelectorAll<HTMLButtonElement>('.sound-toggle').forEach(b => {
+    b.textContent = sound.muted ? '🔇 Sound off' : '🔊 Sound on';
+    b.setAttribute('aria-pressed', String(!sound.muted));
+  });
+}
+
+function toggleSound(): void {
+  sound.toggle();
+  renderSoundButtons();
+}
+
+document.querySelectorAll('.sound-toggle').forEach(b => b.addEventListener('click', toggleSound));
+renderSoundButtons();
 
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
@@ -217,10 +242,15 @@ function updateHud(g: Game): void {
     g.queue.forEach((p, i) => {
       drawPreview(nextCanvases[i], sprites, PIECES, footprints, p);
       nextNames[i].textContent = PIECES[p].name;
+      nextNames[i].title = `${PIECES[p].name}, ${PIECES[p].city}`;
     });
   }
   const act = g.active?.piece ?? -1;
-  if (hud.active !== act) $('now-name').textContent = act >= 0 ? PIECES[(hud.active = act)].name : '—';
+  if (hud.active !== act) {
+    hud.active = act;
+    $('now-name').textContent = act >= 0 ? PIECES[act].name : '—';
+    $('now-city').textContent = act >= 0 ? PIECES[act].city : '';
+  }
 }
 
 function redrawAll(): void {
@@ -238,6 +268,7 @@ function frame(now: number): void {
   if (state === 'playing' && game) {
     input.update(dt);
     game.update(dt);
+    sound.handle(game.drainEvents());
     if (kind === 'daily' && game.piecesPlaced !== lastSavedPieces) {
       lastSavedPieces = game.piecesPlaced;
       saveDaily(false);
