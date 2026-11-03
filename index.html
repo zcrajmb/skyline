@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#11152b" />
   <meta name="description" content="Skyline — a falling-block puzzle where every piece is a landmark building." />
   <title>Skyline</title>
-  <script type="module" crossorigin src="./assets/index-CgNMNVwU.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-Pzp6cjlX.css">
+  <script type="module" crossorigin src="./assets/index-C0wshqJ0.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-ifO1_iyN.css">
 </head>
 <body>
   <canvas id="bg" aria-hidden="true"></canvas>
@@ -40,12 +40,13 @@
             <figure><canvas class="mini next small"></canvas><figcaption class="next-name"></figcaption></figure>
           </div>
         </section>
-        <div class="now">Now<br /><strong id="now-name">—</strong></div>
+        <div class="now">Now<br /><strong id="now-name">—</strong><span class="city" id="now-city"></span></div>
         <div class="help">
           <kbd>←</kbd><kbd>→</kbd> move<br />
           <kbd>↑</kbd>/<kbd>X</kbd> rotate · <kbd>Z</kbd> back<br />
           <kbd>↓</kbd> soft · <kbd>Space</kbd> drop<br />
-          <kbd>C</kbd> hold · <kbd>P</kbd> pause
+          <kbd>C</kbd> hold · <kbd>P</kbd> pause<br />
+          <kbd>M</kbd> sound on/off
         </div>
       </aside>
     </main>
@@ -74,7 +75,8 @@
       <p class="sub" id="daily-sub"></p>
       <button class="secondary hidden" id="btn-daily-share">Copy today's result</button>
       <button class="primary alt" id="btn-free">Free play</button>
-      <p class="sub">Keyboard: arrows, Space, C, P · Touch: tap rotate, swipe move, flick down drop</p>
+      <button class="secondary sound-toggle" aria-pressed="true">🔊 Sound on</button>
+      <p class="sub">Keyboard: arrows, Space, C, P, M · Touch: tap rotate, swipe move, flick down drop</p>
     </div>
   </div>
 
@@ -83,6 +85,7 @@
     <div class="card">
       <h2>Paused</h2>
       <button class="primary" id="btn-resume">Resume</button>
+      <button class="secondary sound-toggle" aria-pressed="true">🔊 Sound on</button>
       <button class="secondary" id="btn-quit">Quit to menu</button>
     </div>
   </div>
