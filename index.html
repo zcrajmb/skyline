@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#11152b" />
+  <meta name="description" content="Skyline — a falling-block puzzle where every piece is a landmark building." />
+  <title>Skyline</title>
+  <script type="module" crossorigin src="./assets/index-CgNMNVwU.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Pzp6cjlX.css">
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <div id="app">
+    <main class="layout">
+      <aside class="panel left">
+        <section class="box">
+          <h3>Hold</h3>
+          <canvas id="hold" class="mini"></canvas>
+        </section>
+        <section class="stats">
+          <div><span class="label">Score</span><span class="value" id="score">0</span></div>
+          <div><span class="label">Lines</span><span class="value" id="lines">0</span></div>
+          <div><span class="label">Level</span><span class="value" id="level">1</span></div>
+          <div class="mode-tag" id="mode-tag"></div>
+        </section>
+      </aside>
+
+      <div class="well">
+        <canvas id="board" aria-label="Game board"></canvas>
+      </div>
+
+      <aside class="panel right">
+        <section class="box">
+          <h3>Next</h3>
+          <div class="queue">
+            <figure><canvas class="mini next"></canvas><figcaption class="next-name"></figcaption></figure>
+            <figure><canvas class="mini next small"></canvas><figcaption class="next-name"></figcaption></figure>
+            <figure><canvas class="mini next small"></canvas><figcaption class="next-name"></figcaption></figure>
+          </div>
+        </section>
+        <div class="now">Now<br /><strong id="now-name">—</strong></div>
+        <div class="help">
+          <kbd>←</kbd><kbd>→</kbd> move<br />
+          <kbd>↑</kbd>/<kbd>X</kbd> rotate · <kbd>Z</kbd> back<br />
+          <kbd>↓</kbd> soft · <kbd>Space</kbd> drop<br />
+          <kbd>C</kbd> hold · <kbd>P</kbd> pause
+        </div>
+      </aside>
+    </main>
+
+    <div class="touch-controls" id="touch-controls">
+      <button data-action="hold" aria-label="Hold">Hold</button>
+      <button data-action="left" aria-label="Move left">◀</button>
+      <button data-action="rotateCW" aria-label="Rotate" class="rotate-btn">⟳</button>
+      <button data-action="right" aria-label="Move right">▶</button>
+      <button data-action="soft" aria-label="Soft drop">▼</button>
+      <button data-action="hard" aria-label="Hard drop">⤓</button>
+      <button data-action="pause" aria-label="Pause">❚❚</button>
+    </div>
+  </div>
+
+  <!-- Start menu -->
+  <div class="screen" id="menu">
+    <div class="card">
+      <h1>Skyline</h1>
+      <p class="tagline">Stack the world's landmarks.</p>
+      <div class="segmented" role="radiogroup" aria-label="Rotation mode">
+        <button role="radio" data-mode="classic">Classic<small>rotation on</small></button>
+        <button role="radio" data-mode="upright">Upright<small>buildings stand tall</small></button>
+      </div>
+      <button class="primary" id="btn-daily">Daily challenge</button>
+      <p class="sub" id="daily-sub"></p>
+      <button class="secondary hidden" id="btn-daily-share">Copy today's result</button>
+      <button class="primary alt" id="btn-free">Free play</button>
+      <p class="sub">Keyboard: arrows, Space, C, P · Touch: tap rotate, swipe move, flick down drop</p>
+    </div>
+  </div>
+
+  <!-- Pause -->
+  <div class="screen hidden" id="pause">
+    <div class="card">
+      <h2>Paused</h2>
+      <button class="primary" id="btn-resume">Resume</button>
+      <button class="secondary" id="btn-quit">Quit to menu</button>
+    </div>
+  </div>
+
+  <!-- Game over -->
+  <div class="screen hidden" id="gameover">
+    <div class="card">
+      <h2 id="go-title">Game over</h2>
+      <dl class="results">
+        <div><dt>Score</dt><dd id="go-score">0</dd></div>
+        <div><dt>Lines</dt><dd id="go-lines">0</dd></div>
+        <div><dt>Level</dt><dd id="go-level">1</dd></div>
+        <div><dt>Mode</dt><dd id="go-mode">Classic</dd></div>
+      </dl>
+      <pre class="share-preview hidden" id="go-share-text"></pre>
+      <button class="primary hidden" id="btn-share">Copy result</button>
+      <p class="sub" id="share-status" aria-live="polite"></p>
+      <button class="primary hidden" id="btn-again">Play again</button>
+      <button class="secondary" id="btn-menu">Menu</button>
+    </div>
+  </div>
+
+</body>
+</html>
