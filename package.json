@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "balance": "tsx scripts/balance.ts"
+    "balance": "tsx scripts/balance.ts",
+    "deploy": "tsx scripts/deploy.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

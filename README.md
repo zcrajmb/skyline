@@ -13,6 +13,14 @@ npm run preview    # serve the built dist/ locally
 
 The build uses relative asset paths, so `dist/` works from any static host or sub-path.
 
+## Deploy
+
+```bash
+npm run deploy
+```
+
+This runs the tests, builds the game and force-pushes `dist/` to the `gh-pages` branch, which GitHub Pages serves at https://zcrajmb.github.io/skyline/ (Settings → Pages → Source: deploy from branch `gh-pages`, folder `/`). Pushing to `main` alone doesn't update the live site; run `npm run deploy` when you want to publish.
+
 ## Play
 
 | Action | Keyboard | Touch |
